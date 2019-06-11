@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test texture</title>
+	<meta charset="utf-8">
+	<script src="./libs/three.js"></script>
+	<script src="./libs/orbitControls.js"></script>
+	<script src="./libs/stats.min.js"></script>
+	<script src="./SpriteMixer.js"></script>
+
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+
+		div {
+			position: fixed;
+			left: 50%;
+			transform: translate(-50%);
+		}
+	</style>
+
+</head>
+
+
+
+<body>
+
+
+	<div>
+		<button onclick="onClickPlay()">actionSprite.playOnce()</button>
+		<button onclick="onClickPlayLoop()">actionSprite.playLoop()</button>
+		<button onclick="onClickPauseNext()">actionSprite.pauseNextEnd()</button>
+		<button onclick="onClickPause()">actionSprite.pause()</button>
+		<button onclick="onClickResume()">actionSprite.resume()</button>
+		<button onclick="onClickStop()">actionSprite.stop()</button>
+		<button onclick="onClickHide()">toggle actionSprite.hideWhenFinished</button>
+		<button onclick="onClickClamp()">toggle actionSprite.clampWhenFinished</button>
+	</div>
+
+	<script type="text/javascript">
+
+		
+		
+		var scene, renderer, camera, controls, clock, stats;
+		const WIDTH = window.innerWidth;
+		const HEIGHT = window.innerHeight;
+
+
+
+		///////////////////////
+		///	INITIALIZATION
+		///////////////////////
+		var spriteMixer = SpriteMixer();
+
+
+
+		///////// LISTENERS
+
+		window.addEventListener('load', function() {
+			main();
+			loop();
+		})
+
+		// As shown bellow, you can loop through the mixer's actionSprites with
+		// the array spriteMixer.actionSprites.
+
+		function onClickPlay() {
+			for (let i=0 ; i<spriteMixer.actionSprites.length ; i++) {
+				spriteMixer.actionSprites[i].playOnce();
+				// Set the .visible = true.
+				// Restart the animation from frame 0.
+				// Set .paused = false -> animate at next update in the loop.
+				// Set .mustLoop = false.
+			};
+		};
+
+		function onClickResume() {
+			for (let i=0 ; i<spriteMixer.actionSprites.length ; i++) {
+				spriteMixer.actionSprites[i].resume();
+				// Set the .visible = true.
+				// Set .paused = false -> animate at next update in the loop.
+				// Unlike .playOnce(), it does not restart at frame 0.
+			};
+		};
+
+		function onClickPlayLoop() {
+			for (let i=0 ; i<spriteMixer.actionSprites.length ; i++) {
+				spriteMixer.actionSprites[i].playLoop();
+				// Set the .visible = true.
+				// Restart the animation from frame 0.
+				// Set .paused = false -> animate at next update in the loop.
+				// Set .mustLoop = true -> animation will restart at last frame.
+			};
+		};
+
+		function onClickPauseNext() {
+			for (let i=0 ; i<spriteMixer.actionSprites.length ; i++) {
+				spriteMixer.actionSprites[i].pauseNextEnd();
+				// Set .mustLoop = false -> animation will pause at last frame.
+			};
+		};
+
+		function onClickPause() {
+			for (let i=0 ; i<spriteMixer.actionSprites.length ; i++) {
+				spriteMixer.actionSprites[i].pause();
+				// Set sprite.paused = true -> next update in the loop 
+				// will have no effect.
+			};
+		};
+
+		function onClickStop() {
+			for (let i=0 ; i<spriteMixer.actionSprites.length ; i++) {
+				spriteMixer.actionSprites[i].stop();
+				// Restart the animation
+				// Set .paused = true -> Animation will pause at frame 0.
+				// If .hideWhenFinished == true, then set .visible = false.
+			};
+		};
+
+		function onClickHide() {
+			for (let i=0 ; i<spriteMixer.actionSprites.length ; i++) {
+				spriteMixer.actionSprites[i].hideWhenFinished =
+					!spriteMixer.actionSprites[i].hideWhenFinished;
+				// If .hideWhenFinished == true, .visible will be
+				// set to false at the end of the animation.
+			};
+		};
+
+		function onClickClamp() {
+			for (let i=0 ; i<spriteMixer.actionSprites.length ; i++) {
+				spriteMixer.actionSprites[i].clampWhenFinished =
+					!spriteMixer.actionSprites[i].clampWhenFinished;
+				// If .clampWhenFinished == true, animation will pause a last
+				// frame when it finishes.
+			};
+		};
+
+
+
+
+
+
+
+
+		function main() {
+
+
+			///////////////////////////
+			///	BASIC THREE.JS CODE
+			///////////////////////////
+
+			scene = new THREE.Scene();
+			scene.background = new THREE.Color(0x666666);
+
+			camera = new THREE.PerspectiveCamera(30, WIDTH/HEIGHT, 0.1, 1000);
+
+			controls = new THREE.OrbitControls(camera, document.body);
+			controls.autoRotate = true ;
+			controls.autoRotateSpeed = 4;
+			camera.position.set(0, 8, 30);
+			controls.update();
+
+			renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+			renderer.setSize(WIDTH, HEIGHT);
+			document.body.appendChild(renderer.domElement);
+
+			clock = new THREE.Clock();
+
+			stats = new Stats();
+			document.body.appendChild(stats.dom);
+
+
+
+
+
+
+
+			////////////////////
+			///	CUSTOM CODE
+			////////////////////
+
+			/*
+				ActionSprite(textureURL:string, tilesHoriz:integer, tilesVert:integer, numTiles:integer, tileDispDuration:integer)
+					- textureURL : path to the texture.
+					- tilesHoriz : number of frames on the horizontal direction.
+					- tilesVert : number of frames on the vertical direction.
+					- numTiles : total number of frames. As you can see in the exemples,
+					  it does not necessarily equal tilesHoriz*tilesVert, for instance
+					  if the last frames are empty.
+					- tileDispDuration : display duration of ONE FRAME, un milliseconds.
+
+				spriteMixer.ActionSprite() returns a extended THREE.Sprite.
+				All the parameters necessary for the animation are stored inside,
+				but you can still use it as any THREE.Sprite, like scale it etc..
+			*/
+			
+			splash = spriteMixer.ActionSprite("textures/splash.png", 4, 3, 7, 55);
+			splash.position.set(2.5, 2.5, 0);
+			splash.scale.set(4, 4, 1);
+
+			land = spriteMixer.ActionSprite("textures/land.png", 4, 3, 8, 55);
+			land.position.set(-2.5, 2.5, 0);
+			land.scale.set(4, 4, 1);
+
+			smokeGrey = spriteMixer.ActionSprite("textures/smoke_grey.png", 3, 3, 9, 55);
+			smokeGrey.position.set(2.5, -2.5, 0);
+			smokeGrey.scale.set(4, 4, 1);
+
+			smokeWhite = spriteMixer.ActionSprite("textures/smoke_white.png", 3, 3, 9, 55);
+			smokeWhite.position.set(-2.5, -2.5, 0);
+			smokeWhite.scale.set(4, 4, 1);
+
+			scene.add(splash, land, smokeGrey, smokeWhite);
+
+		};
+
+
+
+		function loop() {
+			requestAnimationFrame(loop);
+			renderer.render(scene, camera);
+			stats.update();
+			controls.update();
+
+			var delta = clock.getDelta();
+			
+			/////////////////////
+			///	   UPDATE
+			/////////////////////
+			spriteMixer.update(delta);
+		};
+
+
+
+
+		
+
+
+	</script>
+	
+
+</body>
+</html>
