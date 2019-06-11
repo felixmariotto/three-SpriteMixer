@@ -151,8 +151,8 @@ function SpriteMixer() {
 		sprite.tileDisplayDuration = tileDispDuration;
 		sprite.currentDisplayTime = 0;
 		sprite.currentTile = 0;
-		sprite.paused = true;
-		sprite.mustLoop == false;
+		sprite.paused = false;
+		sprite.mustLoop == true;
 		sprite.clampWhenFinished = true;
 		sprite.hideWhenFinished = false;
 
