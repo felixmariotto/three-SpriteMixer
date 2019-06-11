@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>test texture</title>
+	<title>example spriteMixer</title>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, shrink-to-fit=no">
 	<script src="./libs/three.js"></script>
 	<script src="./libs/orbitControls.js"></script>
 	<script src="./libs/stats.min.js"></script>
@@ -48,6 +49,11 @@
 
 	<script type="text/javascript">
 
+
+		window.addEventListener('load', function() {
+			main();
+			loop();
+		})
 		
 		
 		var scene, renderer, camera, controls, clock, stats;
@@ -63,15 +69,12 @@
 
 
 
-		///////// LISTENERS
-
-		window.addEventListener('load', function() {
-			main();
-			loop();
-		})
-
-		// As shown bellow, you can loop through the mixer's actionSprites with
-		// the array spriteMixer.actionSprites.
+		//////////////////////////////////////////
+		/// DIFFERENT WAYS OF USING ACTIONSPRITES
+		//////////////////////////////////////////
+		// In the examples bellow it is shown how to loop through
+		// all your actionSprites, but of course you can animate
+		// them independently.
 
 		function onClickPlay() {
 			for (let i=0 ; i<spriteMixer.actionSprites.length ; i++) {
@@ -198,9 +201,9 @@
 					  if the last frames are empty.
 					- tileDispDuration : display duration of ONE FRAME, un milliseconds.
 
-				spriteMixer.ActionSprite() returns a extended THREE.Sprite.
+				spriteMixer.ActionSprite() returns a extended THREE.Sprite .
 				All the parameters necessary for the animation are stored inside,
-				but you can still use it as any THREE.Sprite, like scale it etc..
+				but you can still use it as any THREE.Sprite, like scale it etc.
 			*/
 			
 			splash = spriteMixer.ActionSprite("textures/splash.png", 4, 3, 7, 55);
@@ -239,10 +242,6 @@
 			spriteMixer.update(delta);
 		};
 
-
-
-
-		
 
 
 	</script>
