@@ -5,8 +5,6 @@
 
 function SpriteMixer() {
 
-
-	var loader = new THREE.TextureLoader();
 	var actionSprites = []; // Will store every new actionSprite.
 
 
@@ -121,7 +119,7 @@ function SpriteMixer() {
 
 	/*
 		ActionSprite(textureURL:string, tilesHoriz:integer, tilesVert:integer, numTiles:integer, tileDispDuration:integer)
-			- textureURL : path to the texture.
+			- texture : texture containing all the frames in a grid.
 			- tilesHoriz : number of frames on the horizontal direction.
 			- tilesVert : number of frames on the vertical direction.
 			- numTiles : total number of frames. As you can see in the exemples,
@@ -133,9 +131,7 @@ function SpriteMixer() {
 		All the parameters necessary for the animation are stored inside,
 		but you can still use it as any THREE.Sprite, like scale it etc..
 	*/
-	function ActionSprite(textureURL, tilesHoriz, tilesVert, numTiles, tileDispDuration) {
-
-		let texture = loader.load(textureURL);
+	function ActionSprite(texture, tilesHoriz, tilesVert, numTiles, tileDispDuration) {
 
 		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 		texture.repeat.set( 1/tilesHoriz, 1/tilesVert );
@@ -174,7 +170,6 @@ function SpriteMixer() {
 
 
 	return {
-		loader: loader,
 		actionSprites: actionSprites,
 		update: update,
 		offsetTexture: offsetTexture,
