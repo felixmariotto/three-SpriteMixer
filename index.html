@@ -44,6 +44,17 @@
 			padding: 8px;
 		}
 
+		a {
+			position: fixed;
+			bottom: 20px;
+			left: 50%;
+			transform: translate(-50%);
+			font-size: 1.2em;
+			padding: 12px;
+			border-radius: 10px;
+			background-color: #999999;
+		}
+
 	</style>
 
 </head>
@@ -61,9 +72,11 @@
 		<button onclick="onClickPause()">actionSprite.pause()</button>
 		<button onclick="onClickResume()">actionSprite.resume()</button>
 		<button onclick="onClickStop()">actionSprite.stop()</button>
-		<button onclick="onClickHide()">toggle actionSprite.hideWhenFinished</button>
-		<button onclick="onClickClamp()">toggle actionSprite.clampWhenFinished</button>
+		<button onclick="onClickHide()">toggle .hideWhenFinished</button>
+		<button onclick="onClickClamp()">toggle .clampWhenFinished</button>
 	</div>
+
+	<a target='_blank' href="https://github.com/felixmariotto/three-SpriteMixer">< Source code ></a>
 
 	<script type="text/javascript">
 
