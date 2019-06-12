@@ -14,16 +14,19 @@ var spriteMixer = SpriteMixer();
 
 Create a actionSprite :
 ```javascript
-var actionSprite = spriteMixer.ActionSprite("texture.png", 3, 3, 9, 60);
+new THREE.TextureLoader().load("texture.png", (texture)=> {
+  actionSprite = spriteMixer.ActionSprite(texture, 3, 3, 9, 60);
+});
+
 /*
 ActionSprite(textureURL:string, tilesHoriz:integer, tilesVert:integer, numTiles:integer, tileDispDuration:integer)
-	- textureURL : path to the texture.
+	- texture : texture containing all the frames of the animation in a grid.
 	- tilesHoriz : number of frames on the horizontal direction.
 	- tilesVert : number of frames on the vertical direction.
 	- numTiles : total number of frames. As you can see in the exemples,
 	  it does not necessarily equal tilesHoriz*tilesVert, for instance
 	  if the last frames are empty.
-	- tileDispDuration : display duration of ONE FRAME, un milliseconds.
+	- tileDispDuration : display duration of ONE FRAME, in milliseconds.
 */
 ```  
 
