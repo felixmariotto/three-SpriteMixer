@@ -19,7 +19,7 @@ new THREE.TextureLoader().load("texture.png", (texture)=> {
 });
 
 /*
-ActionSprite(textureURL:string, tilesHoriz:integer, tilesVert:integer, numTiles:integer, tileDispDuration:integer)
+ActionSprite(texture:THREE.Texture, tilesHoriz:integer, tilesVert:integer, numTiles:integer, tileDispDuration:integer)
 	- texture : texture containing all the frames of the animation in a grid.
 	- tilesHoriz : number of frames on the horizontal direction.
 	- tilesVert : number of frames on the vertical direction.
