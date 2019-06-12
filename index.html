@@ -237,23 +237,37 @@
 				but you can still use it as any THREE.Sprite, like scale it etc.
 			*/
 			
-			splash = spriteMixer.ActionSprite("textures/splash.png", 4, 3, 7, 55);
-			splash.position.set(2.5, 2.5, 0);
-			splash.scale.set(4, 4, 1);
+			var loader = new THREE.TextureLoader();
+			
+			loader.load("textures/splash.png", (texture)=> {
+				splash = spriteMixer.ActionSprite(texture, 4, 3, 7, 55);
+				splash.position.set(2.5, 2.5, 0);
+				splash.scale.set(4, 4, 1);
+				scene.add( splash );
+			});
+			
+			loader.load("textures/land.png", (texture)=> {
+				land = spriteMixer.ActionSprite(texture, 4, 3, 8, 55);
+				land.position.set(-2.5, 2.5, 0);
+				land.scale.set(4, 4, 1);
+				scene.add( land );
+			});
+			
 
-			land = spriteMixer.ActionSprite("textures/land.png", 4, 3, 8, 55);
-			land.position.set(-2.5, 2.5, 0);
-			land.scale.set(4, 4, 1);
+			loader.load("textures/smoke_grey.png", (texture)=> {
+				smokeGrey = spriteMixer.ActionSprite(texture, 3, 3, 9, 55);
+				smokeGrey.position.set(2.5, -2.5, 0);
+				smokeGrey.scale.set(4, 4, 1);
+				scene.add( smokeGrey );
+			});
+			
 
-			smokeGrey = spriteMixer.ActionSprite("textures/smoke_grey.png", 3, 3, 9, 55);
-			smokeGrey.position.set(2.5, -2.5, 0);
-			smokeGrey.scale.set(4, 4, 1);
-
-			smokeWhite = spriteMixer.ActionSprite("textures/smoke_white.png", 3, 3, 9, 55);
-			smokeWhite.position.set(-2.5, -2.5, 0);
-			smokeWhite.scale.set(4, 4, 1);
-
-			scene.add(splash, land, smokeGrey, smokeWhite);
+			loader.load("textures/smoke_white.png", (texture)=> {
+				smokeWhite = spriteMixer.ActionSprite(texture, 3, 3, 9, 55);
+				smokeWhite.position.set(-2.5, -2.5, 0);
+				smokeWhite.scale.set(4, 4, 1);
+				scene.add( smokeWhite );
+			});
 
 		};
 
