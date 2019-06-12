@@ -24,7 +24,7 @@ ActionSprite(textureURL:string, tilesHoriz:integer, tilesVert:integer, numTiles:
 	- numTiles : total number of frames. As you can see in the exemples,
 	  it does not necessarily equal tilesHoriz*tilesVert, for instance
 	  if the last frames are empty.
-	- tileDispDuration : display duration of ONE FRAME, un milliseconds.
+	- tileDispDuration : display duration of ONE FRAME, in milliseconds.
 */
 ```  
 
