@@ -15,6 +15,7 @@ var spriteMixer = SpriteMixer();
 Create a actionSprite :
 ```javascript
 var actionSprite = spriteMixer.ActionSprite("texture.png", 3, 3, 9, 60);
+
 /*
 ActionSprite(textureURL:string, tilesHoriz:integer, tilesVert:integer, numTiles:integer, tileDispDuration:integer)
 	- textureURL : path to the texture.
