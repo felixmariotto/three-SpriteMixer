@@ -70,5 +70,7 @@ actionSprite.hideWhenFinished = true;
 
 ```  
 
-
+The texture including tiles must be in this format :
+![exemple of tiles texture](https://felixmariotto.s3.eu-west-3.amazonaws.com/tiles_texture.jpg)
+Frames go from top-left to bottom-right. Last frames can be empty.
 
