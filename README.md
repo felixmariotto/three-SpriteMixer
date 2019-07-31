@@ -80,7 +80,7 @@ Listen for animation events :
 	-> callback is the function you wish to be called at the resolution of this event.
 */
 
-spriteMixer.addEventListener('finished', function(event) {
+spriteMixer.addEventListener('finished' /* or 'loop' */ , function(event) {
 	/* the first argument of the callback takes an object containing an 'type' argument, which is either 'loop' or 'finished',
 	and an 'action' argument, containing the actionSprite that triggered the event. */
 	console.log(event.action)
