@@ -5,7 +5,27 @@
 
 function SpriteMixer() {
 
+
 	var actionSprites = []; // Will store every new actionSprite.
+	var listeners = []; // Will store the user callbacks to call upon loop, finished, etc..
+
+	var api = {
+		actionSprites: actionSprites,
+		update: update,
+		offsetTexture: offsetTexture,
+		updateSprite: updateSprite,
+		ActionSprite: ActionSprite,
+		addEventListener: addEventListener
+	};
+
+
+	function addEventListener( eventName, callback ) {
+		if ( eventName && callback ) {
+			listeners.push(  { eventName, callback }  );
+		} else {
+			throw 'Error : an argument is missing';
+		};
+	};
 
 
 	function update(delta) { // Update every stored actionSprite if needed.
@@ -34,25 +54,38 @@ function SpriteMixer() {
 		actionSprite.currentDisplayTime += milliSec;
 
 		while (actionSprite.currentDisplayTime > actionSprite.tileDisplayDuration) {
-			// This while loop while be called several time is the passed milliSec
+			// This while loop will be called several times if the passed milliSec
 			// parameter is longer than a frame lasts. See bellow :
 			actionSprite.currentDisplayTime -= actionSprite.tileDisplayDuration;
 			actionSprite.currentTile ++;
 
+			// Restarts the animation if the last frame was reached at last call.
 			if (actionSprite.currentTile == actionSprite.numberOfTiles) {
 				actionSprite.currentTile = 0;
-			}; // Restarts the animation if the last frame was reached at last call.
+				// Call the user callbacks on the event 'loop'
+				if ( actionSprite.mustLoop == true ) {
+					listeners.forEach( (listener)=> {
+						if ( listener.eventName == 'loop' ) {
+							listener.callback({
+								type:'loop',
+								action: actionSprite
+							});
+						};
+					});
+				};
+			};
 
 			offsetTexture(actionSprite);
 
 			if (actionSprite.currentTile == actionSprite.numberOfTiles - 1 &&
 				actionSprite.mustLoop == false &&
 			    actionSprite.clampWhenFinished == true) {
-				// Pause at last frame is .clampWhenFinished == true.
+				// Pause at last frame if .clampWhenFinished == true.
 					actionSprite.paused = true ;
 					if (actionSprite.hideWhenFinished == true) {
 						actionSprite.visible = false ;
 					};
+					callFinishedListeners( actionSprite );
 				
 			} else if (actionSprite.currentTile == 0 &&
 				actionSprite.mustLoop == false &&
@@ -62,7 +95,22 @@ function SpriteMixer() {
 					if (actionSprite.hideWhenFinished == true) {
 						actionSprite.visible = false ;
 					};
+					callFinishedListeners( actionSprite );
+			};
 
+			// Call the user callbacks on the event 'finished'.
+			function callFinishedListeners( actionSprite ) {
+				setTimeout( ()=> {
+					listeners.forEach( (listener)=> {
+						if ( listener.eventName == 'finished' ) {
+							listener.callback({
+								type:'finished',
+								action: actionSprite
+							});
+						};
+					}, actionSprite.tileDisplayDuration );
+				})
+				
 			};
 		};
 
@@ -148,7 +196,7 @@ function SpriteMixer() {
 		sprite.currentDisplayTime = 0;
 		sprite.currentTile = 0;
 		sprite.paused = false;
-		sprite.mustLoop == true;
+		sprite.mustLoop = true;
 		sprite.clampWhenFinished = true;
 		sprite.hideWhenFinished = false;
 
@@ -167,14 +215,6 @@ function SpriteMixer() {
 
 
 
-
-
-	return {
-		actionSprites: actionSprites,
-		update: update,
-		offsetTexture: offsetTexture,
-		updateSprite: updateSprite,
-		ActionSprite: ActionSprite
-	};
+	return api;
 
 };
