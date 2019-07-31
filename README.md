@@ -76,8 +76,8 @@ Listen for animation events :
 /*
 	spriteMixer.addEventListener( eventName, callback )
 	-> eventName is a string, either 'loop' or 'finished'. If 'loop', the callback
-	   will be called everytime an actionSprite with .mustLoop==true finishes a cycle.
-	-> callback is the function you wished to be called at the resolution of this event.
+	   will be called every time an actionSprite with .mustLoop==true finishes a cycle.
+	-> callback is the function you wish to be called at the resolution of this event.
 */
 
 spriteMixer.addEventListener('finished', function(event) {
