@@ -1,6 +1,7 @@
 # three-SpriteMixer
 Based on http://stemkoski.github.io/Three.js/Texture-Animation.html  
-Working example here : https://felixmariotto.github.io/spritemixer
+Example 1 : https://felixmariotto.github.io/spritemixer
+Example 2 : https://felixmariotto.github.io/spritemixer2
 
 ### Mixing table to play sprite animations in Three.js ###
 
@@ -69,6 +70,22 @@ actionSprite.hideWhenFinished = true;
 // set the object.visible = false at last frame if true
 
 ```  
+
+Listen for animation events :
+```javascript
+/*
+	spriteMixer.addEventListener( eventName, callback )
+	-> eventName is a string, either 'loop' or 'finished'. If 'loop', the callback
+	   will be called everytime an actionSprite with .mustLoop==true finishes a cycle.
+	-> callback is the function you wished to be called at the resolution of this event.
+*/
+
+spriteMixer.addEventListener('finished', function(event) {
+	/* the first argument of the callback takes an object containing an 'type' argument, which is either 'loop' or 'finished',
+	and an 'action' argument, containing the actionSprite that triggered the event. */
+	console.log(event.action)
+});
+```
 
 The texture including tiles must be in this format :
 ![exemple of tiles texture](https://felixmariotto.s3.eu-west-3.amazonaws.com/tiles_texture.jpg)
