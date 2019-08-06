@@ -40,8 +40,8 @@ function SpriteMixer() {
 	};
 
 
-	function offsetTexture(actionSprite) {
-		// This offsets the texture to make the next frame of the animation appear.
+	// This offsets the texture to make the next frame of the animation appear.
+	function offsetTexture( actionSprite ) {
 		let currentColumn = actionSprite.currentTile % actionSprite.tilesHorizontal;
 		actionSprite.material.map.offset.x = currentColumn / actionSprite.tilesHorizontal;
 		let currentRow = Math.floor(actionSprite.currentTile / actionSprite.tilesHorizontal);
@@ -49,7 +49,7 @@ function SpriteMixer() {
 	};
 
 
-	function updateSprite(actionSprite, milliSec) {
+	function updateSprite( actionSprite, milliSec ) {
 		
 		actionSprite.currentDisplayTime += milliSec;
 
@@ -60,7 +60,7 @@ function SpriteMixer() {
 			actionSprite.currentTile ++;
 
 			// Restarts the animation if the last frame was reached at last call.
-			if (actionSprite.currentTile == actionSprite.numberOfTiles) {
+			if (actionSprite.currentTile == actionSprite.numberOfTiles -1) {
 				actionSprite.currentTile = 0;
 				// Call the user callbacks on the event 'loop'
 				if ( actionSprite.mustLoop == true ) {
@@ -128,6 +128,11 @@ function SpriteMixer() {
 
 	// resume the action if it was paused
 	function resume() {
+		// this is in case setFrame was used to set a frame outside of the
+		// animation range, which would lead to bugs.
+		if ( this.currentTile > this.numberOfTiles -1 ) {
+			this.currentTile = 0;
+		};
 		this.paused = false ;
 		this.visible = true ;
 	};
@@ -161,6 +166,12 @@ function SpriteMixer() {
 		offsetTexture(this);
 	};
 
+	// Set manually a frame of the animation. Frame indexing starts at 0.
+	function setFrame( frameID ) {
+		this.pause();
+		this.currentTile = frameID;
+		offsetTexture(this);
+	};
 
 
 
@@ -193,6 +204,7 @@ function SpriteMixer() {
 		sprite.tilesVertical = tilesVert ;
 		sprite.numberOfTiles = numTiles ;
 		sprite.tileDisplayDuration = tileDispDuration;
+		sprite.setFrame = setFrame;
 		sprite.currentDisplayTime = 0;
 		sprite.currentTile = 0;
 		sprite.paused = false;
