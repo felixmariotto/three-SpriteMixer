@@ -1,19 +1,20 @@
 # three-SpriteMixer
 Based on http://stemkoski.github.io/Three.js/Texture-Animation.html  
 Example 1 : https://felixmariotto.github.io/spritemixer    
-Example 2 : https://felixmariotto.github.io/spritemixer2
+Example 2 : https://felixmariotto.github.io/spritemixer2       
+Example 3 : https://felixmariotto.github.io/spritemixer3
 
 ### Mixing table to play sprite animations in Three.js ###
 
 The aim is to make visual effects in Three.js games simple : give a path to the texture including the frames of your animation, give the parameters of the animation, and you get an extended THREE.Sprite object, that you can use as a normal Sprite object, but also animate with SpriteMixer's functions.
 
-### How to use ###
-Instantiate :
+# How to use
+### Instantiate :
 ```javascript
 var spriteMixer = SpriteMixer();
 ```  
 
-Create a actionSprite :
+### Create a actionSprite :
 ```javascript
 new THREE.TextureLoader().load("texture.png", (texture)=> {
   actionSprite = spriteMixer.ActionSprite(texture, 3, 3, 9, 60);
@@ -31,7 +32,7 @@ ActionSprite(texture:THREE.Texture, tilesHoriz:integer, tilesVert:integer, numTi
 */
 ```  
 
-Update in your animation loop:
+### Update in your animation loop:
 ```javascript
 function loop() {
 	requestAnimationFrame(loop);
@@ -43,7 +44,7 @@ function loop() {
 	spriteMixer.update(delta);
 };
 ```
-Animate your actionSprite :
+### Animate your actionSprite :
 ```javascript
 actionSprite.playOnce();
 // make the sprite visible and play it only once
@@ -71,7 +72,7 @@ actionSprite.hideWhenFinished = true;
 
 ```  
 
-Listen for animation events :
+### Listen for animation events :
 ```javascript
 /*
 	spriteMixer.addEventListener( eventName, callback )
@@ -85,6 +86,12 @@ spriteMixer.addEventListener('finished' /* or 'loop' */ , function(event) {
 	and an 'action' argument, containing the actionSprite that triggered the event. */
 	console.log(event.action)
 });
+```
+
+### Set a frame manually (so you can use actionSprite as a table of indexed textures) :
+```javascript
+// Set manually a frame of the animation. Frame indexing starts at 0.
+actionSprite.setFrame( index );
 ```
 
 The texture including tiles must be in this format :
