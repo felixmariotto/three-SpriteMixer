@@ -1,12 +1,10 @@
 # three-SpriteMixer
 Based on http://stemkoski.github.io/Three.js/Texture-Animation.html  
-Example 1 : https://felixmariotto.github.io/spritemixer    
-Example 2 : https://felixmariotto.github.io/spritemixer2       
-Example 3 : https://felixmariotto.github.io/spritemixer3
+Example : https://felixmariotto.github.io/from_indexed_texture    
 
 ### Mixing table to play sprite animations in Three.js ###
 
-The aim is to make visual effects in Three.js games simple : give a path to the texture including the frames of your animation, give the parameters of the animation, and you get an extended THREE.Sprite object, that you can use as a normal Sprite object, but also animate with SpriteMixer's functions.
+The aim is to make 2D animations in Three.js simple : load the texture including the frames of your animation, give the parameters of the animation, and you get an extended THREE.Sprite object, that you can use as a normal Sprite object, but also animate with SpriteMixer's functions.
 
 # How to use
 ### Instantiate :
@@ -14,23 +12,37 @@ The aim is to make visual effects in Three.js games simple : give a path to the 
 var spriteMixer = SpriteMixer();
 ```  
 
-### Create a actionSprite :
+### Create an actionSprite and Actions :
 ```javascript
-new THREE.TextureLoader().load("texture.png", (texture)=> {
-  actionSprite = spriteMixer.ActionSprite(texture, 3, 3, 9, 60);
-});
+new THREE.TextureLoader().load("./character.png", (texture)=> {
 
-/*
-ActionSprite(texture:THREE.Texture, tilesHoriz:integer, tilesVert:integer, numTiles:integer, tileDispDuration:integer)
-	- texture : texture containing all the frames of the animation in a grid.
-	- tilesHoriz : number of frames on the horizontal direction.
-	- tilesVert : number of frames on the vertical direction.
-	- numTiles : total number of frames. As you can see in the exemples,
-	  it does not necessarily equal tilesHoriz*tilesVert, for instance
-	  if the last frames are empty.
-	- tileDispDuration : display duration of ONE FRAME, in milliseconds.
-*/
+	actionSprite = spriteMixer.ActionSprite( texture, 10, 2 );
+
+	action = spriteMixer.Action(actionSprite, 2, 10, 50);
+	
+	scene.add( actionSprite );
+});
 ```  
+
+**SpriteMixer.ActionSprite() returns an extended THREE.Sprite.    
+All the parameters necessary for the animation are stored inside, 
+but you can still use it as any THREE.Sprite, like scale it etc..**
+
+**ActionSprite**( texture : *THREE.Texture*, tilesHoriz : *integer*, tilesVert : *integer* )    
+	- texture : texture containing all the frames in a grid.    
+	- tilesHoriz : number of frames on the horizontal direction.    
+	- tilesVert : number of frames on the vertical direction.    
+	
+**SpriteMixer.Action returns an object containing the informations related to a
+specific sequence in an actionSprite. For instance, if the actionSprite
+contains 20 tiles, an Action could start at tile 5 and finish at tile 8.**
+
+**Action**( actionSprite : *ActionSprite*, indexStart : *integer*, indexEnd : *integer*, tileDisplayDuration : *integer* )    
+	- actionSprite is a SpriteMixer.ActionSprite, containing a loaded texture with tiles    
+	- indexStart is the starting tile of the animation, index starts at 0.    
+	- indexEnd is the ending tile of the animation    
+	- tileDisplayDuration is the duration of ONE FRAME in the animation    
+	
 
 ### Update in your animation loop:
 ```javascript
@@ -39,62 +51,65 @@ function loop() {
 	renderer.render(scene, camera);
 
 	var delta = clock.getDelta();
-        // delta provided by THREE.Clock
+        // clock is a THREE.Clock object
 			
 	spriteMixer.update(delta);
 };
 ```
-### Animate your actionSprite :
+### Animate your Actions :
 ```javascript
-actionSprite.playOnce();
-// make the sprite visible and play it only once
+action.playOnce();
+// Make the sprite visible and play the action once
 
-actionSprite.playLoop();
-// play the sprite animation in a loop
+action.playLoop();
+// Make the sprite visible and play the sprite animation in a loop
 
-actionSprite.stop();
+action.stop();
 // stop the action and reset
 
-actionSprite.pause();
+action.pause();
 // pause the action without reset
 
-actionSprite.pauseNextEnd();
-// let the action finish its current animation, then stop it
+action.pauseNextEnd();
+// let the action finish its current loop, then stop it
 
-actionSprite.resume();
+action.resume();
 // resume the action if it was paused before its end
 
-actionSprite.clampWhenFinished = true;
-// make the action stop on last frame when it finishes, reset if false
+action.clampWhenFinished = true;
+// If true, stops on its last frame. If false, it resets. Default is true.
 
-actionSprite.hideWhenFinished = true;
-// set the object.visible = false at last frame if true
+action.hideWhenFinished = true;
+// If true, hide the Sprite when action finishes. Default is false.
 
 ```  
 
 ### Listen for animation events :
 ```javascript
-/*
-	spriteMixer.addEventListener( eventName, callback )
-	-> eventName is a string, either 'loop' or 'finished'. If 'loop', the callback
-	   will be called every time an actionSprite with .mustLoop==true finishes a cycle.
-	-> callback is the function you wish to be called at the resolution of this event.
-*/
-
-spriteMixer.addEventListener('finished' /* or 'loop' */ , function(event) {
-	/* the first argument of the callback takes an object containing an 'type' argument, which is either 'loop' or 'finished',
-	and an 'action' argument, containing the actionSprite that triggered the event. */
+spriteMixer.addEventListener('finished', function(event) {
 	console.log(event.action)
 });
 ```
 
+**spriteMixer.addEventListener**( eventName : *"finished" or "loop"*, callback : *function* )
+	-> eventName is a string, either 'loop' or 'finished'. If 'loop', the callback
+	   will be called every time an actionSprite with .mustLoop==true finishes a cycle.
+	-> callback is the function you wish to be called at the resolution of this event.
+	
+The first argument of the callback takes an object containing a 'type' argument, which is either 'loop' or 'finished',
+and an 'action' argument, containing the action that triggered the event.
+
 ### Set a frame manually (so you can use actionSprite as a table of indexed textures) :
 ```javascript
-// Set manually a frame of the animation. Frame indexing starts at 0.
 actionSprite.setFrame( index );
 ```
+Set manually a frame of the animation. Frame indexing starts at 0.
 
-The texture including tiles must be in this format :
-![exemple of tiles texture](https://felixmariotto.s3.eu-west-3.amazonaws.com/tiles_texture.jpg)
-Frames go from top-left to bottom-right. Last frames can be empty.
+The texture including tiles must be in the format :
+- Frames go from top to left and top to bottom
+- One texture can contain tiles for several actions
+- Some tiles can be empty
+- Each side of the texture must be power of 2, or browsers will resize it
+![exemple of tiles texture](https://felixmariotto.s3.eu-west-3.amazonaws.com/character2.png)
+
 
