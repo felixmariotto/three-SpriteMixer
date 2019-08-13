@@ -38,23 +38,31 @@
 				cursor: pointer;
 			}
 
-		#arrows-container {
+		#arrow-bloc {
 			position: fixed;
-			display: flex;
 			bottom: 0px;
 			left: 50vw;
 			transform: translateX(-50%);
 		}
 
-			.arrow {
-				font-size: 3em;
+			#arrows-container {
+				display: flex;
+				justify-content: space-around;
 			}
+
+				.arrow {
+					font-size: 3em;
+				}
 
 		a {
 			position: fixed;
 			bottom: 0px;
 			right: 0px;
 			padding: 5px;
+		}
+
+		h1 {
+			text-align: center;
 		}
 		
 	</style>
@@ -75,12 +83,17 @@
 		<div class="btn" onclick="onResume()">resume</div>
 	</div>
 
-	<div id="arrows-container">
-		<div class="btn arrow" onmousedown="runLeft()" ontouchstart="runLeft()" onmouseup="stopRunning()" ontouchend="stopRunning()">🡄</div>
-		<div class="btn arrow" onmousedown="runRight()" ontouchstart="runRight()" onmouseup="stopRunning()" ontouchend="stopRunning()">🡆</div>
+	<a id="ref" href="https://fr.freepik.com/photos-vecteurs-libre/cadre">Artwork by ddraw</a>
+
+	<div id="arrow-bloc">
+		<h1>Click on the arrows</h1>
+		<div id="arrows-container">
+			<div class="btn arrow" onmousedown="runLeft()" ontouchstart="runLeft()" onmouseup="stopRunning()" ontouchend="stopRunning()">🡄</div>
+			<div class="btn arrow" onmousedown="runRight()" ontouchstart="runRight()" onmouseup="stopRunning()" ontouchend="stopRunning()">🡆</div>
+		</div>
 	</div>
 
-	<a id="ref" href="https://fr.freepik.com/photos-vecteurs-libre/cadre">Artwork by ddraw</a>
+	
 
 	
 
