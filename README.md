@@ -1,5 +1,5 @@
 # three-SpriteMixer
-Based on http://stemkoski.github.io/Three.js/Texture-Animation.html  
+
 Example : https://felixmariotto.github.io/from_indexed_texture    
 
 ### Mixing table to play sprite animations in Three.js ###
