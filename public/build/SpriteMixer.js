@@ -1,4 +1,5 @@
 
+// Creator Felix Mariotto
 
 // Based on Lee Stemkoski's work who coded the core texture offsetting part :
 // http://stemkoski.github.io/Three.js/Texture-Animation.html
@@ -15,6 +16,7 @@ function SpriteMixer() {
 		offsetTexture: offsetTexture,
 		updateSprite: updateSprite,
 		ActionSprite: ActionSprite,
+		Action: Action,
 		addEventListener: addEventListener
 	};
 
@@ -42,10 +44,10 @@ function SpriteMixer() {
 
 	// This offsets the texture to make the next frame of the animation appear.
 	function offsetTexture( actionSprite ) {
-		let currentColumn = actionSprite.currentTile % actionSprite.tilesHorizontal;
-		actionSprite.material.map.offset.x = currentColumn / actionSprite.tilesHorizontal;
-		let currentRow = Math.floor(actionSprite.currentTile / actionSprite.tilesHorizontal);
-		actionSprite.material.map.offset.y = (actionSprite.tilesVertical - currentRow - 1) / actionSprite.tilesVertical;
+		let currentColumn = actionSprite.currentTile % actionSprite.tilesHoriz;
+		actionSprite.material.map.offset.x = currentColumn / actionSprite.tilesHoriz;
+		let currentRow = Math.floor(actionSprite.currentTile / actionSprite.tilesHoriz);
+		actionSprite.material.map.offset.y = (actionSprite.tilesVert - currentRow -1 ) / actionSprite.tilesVert;
 	};
 
 
@@ -176,6 +178,43 @@ function SpriteMixer() {
 
 
 
+
+	function ActionSprite( texture, tilesHoriz, tilesVert ) {
+
+		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+		texture.repeat.set( 1/tilesHoriz, 1/tilesVert );
+
+		let spriteMaterial = new THREE.SpriteMaterial({
+			map:texture, color:0xffffff});
+
+		let actionSprite = new THREE.Sprite(spriteMaterial);
+		actionSprite.isIndexedSprite = true ;
+
+		actionSprite.tilesHoriz = tilesHoriz ;
+		actionSprite.tilesVert = tilesVert ;
+		actionSprite.tiles = (tilesHoriz * tilesVert) ;
+		actionSprite.setFrame = setFrame ;
+		actionSprite.currentDisplayTime = 0 ;
+		actionSprite.currentTile = 0 ;
+		actionSprite.paused = false ;
+
+		offsetTexture( actionSprite ) ;
+
+		/*
+
+		actionSprites.push( actionSprite );
+
+		*/
+
+		return actionSprite ;
+		
+	};
+
+
+
+
+
+
 	/*
 		ActionSprite(textureURL:string, tilesHoriz:integer, tilesVert:integer, numTiles:integer, tileDispDuration:integer)
 			- texture : texture containing all the frames in a grid.
@@ -190,40 +229,32 @@ function SpriteMixer() {
 		All the parameters necessary for the animation are stored inside,
 		but you can still use it as any THREE.Sprite, like scale it etc..
 	*/
-	function ActionSprite(texture, tilesHoriz, tilesVert, numTiles, tileDispDuration) {
+	function Action( actionSprite, numberOfTiles, tileDisplayDuration ) {
 
-		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-		texture.repeat.set( 1/tilesHoriz, 1/tilesVert );
+		if ( !actionSprite.isIndexedSprite ) {
+			throw 'Error : "texture" argument must be an indexedTexture.' ;
+			return
+		};
 
-		let spriteMaterial = new THREE.SpriteMaterial({
-			map:texture, color:0xffffff, premultipliedAlpha:true, alphaTest:0.5});
+		return {
+			type: "spriteAction",
+			playOnce,
+			playLoop,
+			resume,
+			pause,
+			pauseNextEnd,
+			stop,
+			clampWhenFinished: true,
+			hideWhenFinished: false,
+			mustLoop: true,
+			tileDisplayDuration,
+			numberOfTiles,
+			actionSprite
+		};
 
-		let sprite = new THREE.Sprite(spriteMaterial);
-
-		sprite.tilesHorizontal = tilesHoriz ;
-		sprite.tilesVertical = tilesVert ;
-		sprite.numberOfTiles = numTiles ;
-		sprite.tileDisplayDuration = tileDispDuration;
-		sprite.setFrame = setFrame;
-		sprite.currentDisplayTime = 0;
-		sprite.currentTile = 0;
-		sprite.paused = false;
-		sprite.mustLoop = true;
-		sprite.clampWhenFinished = true;
-		sprite.hideWhenFinished = false;
-
-		offsetTexture( sprite );
-
-		sprite.playOnce = playOnce;
-		sprite.resume = resume;
-		sprite.playLoop = playLoop;
-		sprite.pauseNextEnd = pauseNextEnd;
-		sprite.pause = pause;
-		sprite.stop = stop;
-
-		actionSprites.push( sprite );
-		return sprite ;
 	};
+
+
 
 
 

@@ -32,7 +32,9 @@
 
 	<script>
 		
-		var scene, camera, renderer, stats, spriteMixer ;
+		var scene, camera, renderer, stats;
+		var clock, delta, spriteMixer ;
+
 		const WIDTH = window.innerWidth;
 		const HEIGHT = window.innerHeight;
 
@@ -52,7 +54,7 @@
 			/////////////////////////
 
 			scene = new THREE.Scene();
-			scene.background = new THREE.Color( 'red' );
+			scene.background = new THREE.Color( 'green' );
 
 			camera = new THREE.PerspectiveCamera( 70, WIDTH/HEIGHT, 1, 50 );
 			camera.position.z = 10 ;
@@ -63,6 +65,8 @@
 
 			stats = new Stats();
 			document.body.appendChild( stats.dom );
+
+			clock = new THREE.Clock();
 
 			var loader = new THREE.TextureLoader();
 
@@ -75,10 +79,11 @@
 			spriteMixer = SpriteMixer();
 
 			loader.load("./textures/character.png", (texture)=> {
-				actionSprite = spriteMixer.ActionSprite(texture, 10, 1, 9, 45);
-				actionSprite.setFrame( 9 );
-				actionSprite.paused = true;
-				actionSprite.scale.set(2, 2, 1);
+
+				actionSprite = spriteMixer.ActionSprite( texture, 10, 2 );
+				action = spriteMixer.Action(actionSprite, 20, 45);
+
+				actionSprite.scale.set(1.7, 2, 1);
 				scene.add( actionSprite );
 			});
 
@@ -94,6 +99,11 @@
 			requestAnimationFrame(loop);
 			renderer.render( scene, camera );
 			stats.update();
+
+			////// UPDATING
+
+			delta = clock.getDelta();
+			spriteMixer.update( delta );
 		};
 
 	</script>
