@@ -4,7 +4,7 @@ Example : https://felixmariotto.github.io/from_indexed_texture
 
 ### Mixing table to play sprite animations in Three.js ###
 
-The aim is to make 2D animations in Three.js simple : load the texture including the frames of your animation, give the parameters of the animation, and you get an extended THREE.Sprite object, that you can use as a normal Sprite object, but also animate with SpriteMixer's functions.
+The aim is to make 2D animations in Three.js simple : load the texture including the frames of your animation, give the animation's parameters, and you get an extended THREE.Sprite object, that you can use as a normal Sprite object, but also animate with SpriteMixer's functions.
 
 # How to use
 ### Instantiate :
@@ -12,13 +12,14 @@ The aim is to make 2D animations in Three.js simple : load the texture including
 var spriteMixer = SpriteMixer();
 ```  
 
-### Create an actionSprite and Actions :
+### Create an actionSprite and some Actions from it :
 ```javascript
 new THREE.TextureLoader().load("./character.png", (texture)=> {
 
-	actionSprite = spriteMixer.ActionSprite( texture, 10, 2 );
+	actionSprite = spriteMixer.ActionSprite( texture, 5, 2 );
 
-	action = spriteMixer.Action(actionSprite, 2, 10, 50);
+	action1 = spriteMixer.Action(actionSprite, 0, 4, 50);
+	action2 = spriteMixer.Action(actionSprite, 5, 9, 50);
 	
 	scene.add( actionSprite );
 });
@@ -92,8 +93,9 @@ spriteMixer.addEventListener('finished', function(event) {
 ```
 
 **spriteMixer.addEventListener**( eventName : *"finished" or "loop"*, callback : *function* )
-	-> eventName is a string, either 'loop' or 'finished'. If 'loop', the callback
-	   will be called every time an actionSprite with .mustLoop==true finishes a cycle.
+	-> eventName is a string, either 'loop' or 'finished'.   
+	   If 'loop', the callback will be called every time a looping actionSprite finishes a cycle.   
+	   If 'finished', the callback is called once a non-looping actionSprite finishes its cycle.
 	-> callback is the function you wish to be called at the resolution of this event.
 	
 The first argument of the callback takes an object containing a 'type' argument, which is either 'loop' or 'finished',
@@ -105,7 +107,7 @@ actionSprite.setFrame( index );
 ```
 Set manually a frame of the animation. Frame indexing starts at 0.
 
-The texture including tiles must be in the format :
+### The texture including tiles must be in this format :
 - Frames go from top to left and top to bottom
 - One texture can contain tiles for several actions
 - Some tiles can be empty
