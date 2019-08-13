@@ -31,11 +31,31 @@
 				border-style: solid;
 				border-width: 1px;
 				border-radius: 5px;
+				user-select: none;
 			}
 
 			.btn:hover {
 				cursor: pointer;
 			}
+
+		#arrows-container {
+			position: fixed;
+			display: flex;
+			bottom: 0px;
+			left: 50vw;
+			transform: translateX(-50%);
+		}
+
+			.arrow {
+				font-size: 3em;
+			}
+
+		a {
+			position: fixed;
+			bottom: 0px;
+			right: 0px;
+			padding: 5px;
+		}
 		
 	</style>
 </head>
@@ -46,6 +66,7 @@
 	<canvas id="world"></canvas>
 
 	<div id="btn-container">
+		Try actionSprite functions :
 		<div class="btn" onclick="onPlayOnce()">playOnce</div>
 		<div class="btn" onclick="onPlayLoop()">playLoop</div>
 		<div class="btn" onclick="onPauseNextEnd()">pauseNextEnd</div>
@@ -53,6 +74,13 @@
 		<div class="btn" onclick="onStop()">stop</div>
 		<div class="btn" onclick="onResume()">resume</div>
 	</div>
+
+	<div id="arrows-container">
+		<div class="btn arrow" onmousedown="runLeft()" ontouchstart="runLeft()" onmouseup="stopRunning()" ontouchend="stopRunning()">🡄</div>
+		<div class="btn arrow" onmousedown="runRight()" ontouchstart="runRight()" onmouseup="stopRunning()" ontouchend="stopRunning()">🡆</div>
+	</div>
+
+	<a id="ref" href="https://fr.freepik.com/photos-vecteurs-libre/cadre">Artwork by ddraw</a>
 
 	
 
@@ -73,14 +101,6 @@
 			init();
 			loop();
 		})
-
-		window.addEventListener('keydown', (e)=> {
-			onKeyDown(e);
-		});
-
-		window.addEventListener('keyup', (e)=> {
-			onKeyUp(e);
-		});
 
 
 
@@ -114,28 +134,26 @@
 
 
 
-		function onKeyDown(e) {
+		function runRight() {
 
-			if ( e.key == 'ArrowLeft' ) {
+			if ( running != 'right' ) {
+				actions.runRight.playLoop();
+				running = 'right' ;
+			};
+		};
 
-				if ( running != 'left' ) {
-					actions.runLeft.playLoop();
-					running = 'left' ;
-				};
 
-			} else if ( e.key == 'ArrowRight' ) {
+		function runLeft() {
 
-				if ( running != 'right' ) {
-					actions.runRight.playLoop();
-					running = 'right' ;
-				};
+			if ( running != 'left' ) {
+				actions.runLeft.playLoop();
+				running = 'left' ;
 			};
 		};
 
 
 
-
-		function onKeyUp(e) {
+		function stopRunning() {
 
 			actionSprite.currentAction.stop();
 

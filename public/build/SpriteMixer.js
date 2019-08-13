@@ -51,8 +51,7 @@ function SpriteMixer() {
 		action.actionSprite.currentDisplayTime += milliSec;
 
 		while (action.actionSprite.currentDisplayTime > action.tileDisplayDuration) {
-			
-			console.log( action.actionSprite.currentTile );
+		
 
 			action.actionSprite.currentDisplayTime -= action.tileDisplayDuration;
 			action.actionSprite.currentTile = (action.actionSprite.currentTile + 1) ;
