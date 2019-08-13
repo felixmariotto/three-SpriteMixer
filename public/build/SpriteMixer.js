@@ -211,6 +211,17 @@ function SpriteMixer() {
 
 
 
+
+	/*
+		spriteMixer.ActionSprite() returns an extended THREE.Sprite.
+		All the parameters necessary for the animation are stored inside,
+		but you can still use it as any THREE.Sprite, like scale it etc..
+
+		ActionSprite(texture:THREE.Texture, tilesHoriz:integer, tilesVert:integer)
+			- texture : texture containing all the frames in a grid.
+			- tilesHoriz : number of frames on the horizontal direction.
+			- tilesVert : number of frames on the vertical direction.
+	*/
 	function ActionSprite( texture, tilesHoriz, tilesVert ) {
 
 		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -246,21 +257,18 @@ function SpriteMixer() {
 
 
 
-
 	/*
-		ActionSprite(textureURL:string, tilesHoriz:integer, tilesVert:integer, numTiles:integer, tileDispDuration:integer)
-			- texture : texture containing all the frames in a grid.
-			- tilesHoriz : number of frames on the horizontal direction.
-			- tilesVert : number of frames on the vertical direction.
-			- numTiles : total number of frames. As you can see in the exemples,
-			  it does not necessarily equal tilesHoriz*tilesVert, for instance
-			  if the last frames are empty.
-			- tileDispDuration : display duration of ONE FRAME, un milliseconds.
+		Action returns an object containing the informations related to a
+		specific sequence in an actionSprite. For instance, if the actionSprite
+		contains 20 tiles, an Action could start at tile 5 and finish at tile 8.
 
-		spriteMixer.ActionSprite() returns a extended THREE.Sprite.
-		All the parameters necessary for the animation are stored inside,
-		but you can still use it as any THREE.Sprite, like scale it etc..
+		Action( actionSprite:ActionSprite, indexStart:integer, indexEnd:integer, tileDisplayDuration:integer )
+			- actionSprite is a SpriteMixer.ActionSprite, containing a loaded texture with tiles
+			- indexStart is the starting tile of the animation, index starts at 0.
+			- indexEnd is the ending tile of the animation
+			- tileDisplayDuration is the duration of ONE FRAME in the animation
 	*/
+	
 	function Action( actionSprite, indexStart, indexEnd, tileDisplayDuration ) {
 
 		if ( !actionSprite.isIndexedSprite ) {
