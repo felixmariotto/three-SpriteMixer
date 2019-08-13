@@ -1,0 +1,34 @@
+{
+  "name": "three-spritemixer",
+  "version": "1.0.0",
+  "description": "A library to use indexed textures for animation in three.js",
+  "engines": {
+    "node": "10.x"
+  },
+  "main": "app.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixmariotto/three-SpriteMixer.git"
+  },
+  "keywords": [
+    "three.js",
+    "sprite",
+    "animation"
+  ],
+  "author": "felixmariotto@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/felixmariotto/three-SpriteMixer/issues"
+  },
+  "homepage": "https://github.com/felixmariotto/three-SpriteMixer#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
