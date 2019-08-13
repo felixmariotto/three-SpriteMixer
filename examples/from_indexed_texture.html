@@ -63,7 +63,7 @@
 	<script>
 		
 		var scene, camera, renderer, stats;
-		var clock, delta, spriteMixer, actionSprite;
+		var clock, delta, spriteMixer, actionSprite, running;
 		var actions = {};
 
 		const WIDTH = window.innerWidth;
@@ -73,6 +73,17 @@
 			init();
 			loop();
 		})
+
+		window.addEventListener('keydown', (e)=> {
+			onKeyDown(e);
+		});
+
+		window.addEventListener('keyup', (e)=> {
+			onKeyUp(e);
+		});
+
+
+
 
 
 		function onPlayOnce() {
@@ -97,6 +108,44 @@
 
 		function onResume() {
 			actions.runLeft.resume();
+		};
+
+
+
+
+
+		function onKeyDown(e) {
+
+			if ( e.key == 'ArrowLeft' ) {
+
+				if ( running != 'left' ) {
+					actions.runLeft.playLoop();
+					running = 'left' ;
+				};
+
+			} else if ( e.key == 'ArrowRight' ) {
+
+				if ( running != 'right' ) {
+					actions.runRight.playLoop();
+					running = 'right' ;
+				};
+			};
+		};
+
+
+
+
+		function onKeyUp(e) {
+
+			actionSprite.currentAction.stop();
+
+			if ( running == 'right' ) {
+				actionSprite.setFrame( 9 );
+			} else {
+				actionSprite.setFrame( 19 );
+			};
+
+			running = undefined ;
 		};
 
 
@@ -138,11 +187,10 @@
 			loader.load("./textures/character.png", (texture)=> {
 
 				actionSprite = spriteMixer.ActionSprite( texture, 10, 2 );
-				actions.runRight = spriteMixer.Action(actionSprite, 0, 8, 500);
-				actions.runLeft = spriteMixer.Action(actionSprite, 10, 18, 150);
+				actionSprite.setFrame( 9 );
 
-				actions.runLeft.playOnce();
-				// actionSprite.setFrame(9);
+				actions.runRight = spriteMixer.Action(actionSprite, 0, 8, 40);
+				actions.runLeft = spriteMixer.Action(actionSprite, 10, 18, 40);
 
 				actionSprite.scale.set(1.7, 2, 1);
 				scene.add( actionSprite );
@@ -163,6 +211,12 @@
 
 			delta = clock.getDelta();
 			spriteMixer.update( delta );
+
+			if ( running == 'right' ) {
+				actionSprite.position.x += 0.05 ;
+			} else if ( running == 'left' ) {
+				actionSprite.position.x -= 0.05 ;
+			};
 		};
 
 	</script>
