@@ -74,7 +74,7 @@
 	<canvas id="world"></canvas>
 
 	<div id="btn-container">
-		Try actionSprite functions :
+		Try Actions methods :
 		<div class="btn" onclick="onPlayOnce()">playOnce</div>
 		<div class="btn" onclick="onPlayLoop()">playLoop</div>
 		<div class="btn" onclick="onPauseNextEnd()">pauseNextEnd</div>
@@ -209,11 +209,27 @@
 
 			var loader = new THREE.TextureLoader();
 
+
+
 			///////////////////////////////
 			///  SPRITEMIXER RELATED CODE
 			///////////////////////////////
 
+
+			/// SPRITEMIXER INSTANTIATION AND LISTENERS EXAMPLES
+
 			spriteMixer = SpriteMixer();
+
+			spriteMixer.addEventListener('finished', (e)=> {
+				console.log(e);
+			});
+
+			spriteMixer.addEventListener('loop', (e)=> {
+				console.log(e);
+			});
+
+
+			/// ACTIONSPRITE AND ACTIONS INSTANTIATION
 
 			// Make sure to use the texture once it's fully loaded, by
 			// passing a callback function to the loader.
