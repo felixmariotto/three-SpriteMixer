@@ -17,6 +17,25 @@
 			height: 100% ;
 			background-color: grey;
 		}
+
+		#btn-container {
+			position: fixed;
+			right: 0px;
+			padding: 10px;
+		}
+
+			.btn {
+				padding: 3px 10px 3px 10px;
+				margin: 5px;
+				background-color: grey;
+				border-style: solid;
+				border-width: 1px;
+				border-radius: 5px;
+			}
+
+			.btn:hover {
+				cursor: pointer;
+			}
 		
 	</style>
 </head>
@@ -25,6 +44,17 @@
 <body>
 
 	<canvas id="world"></canvas>
+
+	<div id="btn-container">
+		<div class="btn" onclick="onPlayOnce()">playOnce</div>
+		<div class="btn" onclick="onPlayLoop()">playLoop</div>
+		<div class="btn" onclick="onPauseNextEnd()">pauseNextEnd</div>
+		<div class="btn" onclick="onPause()">pause</div>
+		<div class="btn" onclick="onStop()">stop</div>
+		<div class="btn" onclick="onResume()">resume</div>
+	</div>
+
+	
 
 	<script src="libs/three.js"></script>
 	<script src="libs/stats.min.js"></script>
@@ -43,6 +73,32 @@
 			init();
 			loop();
 		})
+
+
+		function onPlayOnce() {
+			actions.runLeft.playOnce();
+		};
+
+		function onPlayLoop() {
+			actions.runLeft.playLoop();
+		};
+
+		function onPauseNextEnd() {
+			actions.runLeft.pauseNextEnd();
+		};
+
+		function onPause() {
+			actions.runLeft.pause();
+		};
+
+		function onStop() {
+			actions.runLeft.stop();
+		};
+
+		function onResume() {
+			actions.runLeft.resume();
+		};
+
 
 
 
@@ -83,9 +139,9 @@
 
 				actionSprite = spriteMixer.ActionSprite( texture, 10, 2 );
 				actions.runRight = spriteMixer.Action(actionSprite, 0, 8, 500);
-				actions.runLeft = spriteMixer.Action(actionSprite, 10, 18, 50);
+				actions.runLeft = spriteMixer.Action(actionSprite, 10, 18, 150);
 
-				actions.runLeft.playLoop();
+				actions.runLeft.playOnce();
 				// actionSprite.setFrame(9);
 
 				actionSprite.scale.set(1.7, 2, 1);

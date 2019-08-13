@@ -59,13 +59,12 @@ function SpriteMixer() {
 
 			// Restarts the animation if the last frame was reached at last call.
 			if (action.actionSprite.currentTile > action.indexEnd) {
-
-				console.log('loop')
 				
 				action.actionSprite.currentTile = action.indexStart ;
 
 				// Call the user callbacks on the event 'loop'
 				if ( action.mustLoop == true ) {
+
 					listeners.forEach( (listener)=> {
 						if ( listener.eventName == 'loop' ) {
 							listener.callback({
@@ -74,6 +73,36 @@ function SpriteMixer() {
 							});
 						};
 					});
+
+				} else { // action must not loop
+
+					if ( action.clampWhenFinished == true ) {
+
+						action.actionSprite.paused = true ;
+
+						if (action.hideWhenFinished == true) {
+							action.actionSprite.visible = false ;
+						};
+
+						callFinishedListeners( action );
+
+					} else { // must restart the animation before to stop
+
+						action.actionSprite.paused = true ;
+
+						if (action.hideWhenFinished == true) {
+							action.actionSprite.visible = false ;
+						};
+
+						// Call updateAction() a last time after a frame duration,
+						// even if the action is actually paused before, in order to restart
+						// the animation.
+						setTimeout( ()=> {
+							updateAction( action, action.tileDisplayDuration );
+							callFinishedListeners( action );
+						}, action.tileDisplayDuration);
+
+					};
 				};
 			};
 
@@ -81,43 +110,18 @@ function SpriteMixer() {
 			offsetTexture( action.actionSprite );
 			
 
-			
-			if (action.actionSprite.currentTile == action.indexEnd &&
-				action.mustLoop == false &&
-			    action.clampWhenFinished == true) {
-				// Pause at last frame if action.clampWhenFinished == true.
-					action.actionSprite.paused = true ;
-					if (action.hideWhenFinished == true) {
-						action.actionSprite.visible = false ;
-					};
-					callFinishedListeners( action );
-				
-			} else if (action.actionSprite.currentTile == action.indexStart &&
-				action.mustLoop == false &&
-			    action.clampWhenFinished == false) {
-				// Pause at first frame if action.clampWhenFinished == false.
-					action.actionSprite.paused = true ;
-					if (action.hideWhenFinished == true) {
-						action.actionSprite.visible = false ;
-					};
-					callFinishedListeners( action );
-			};
-			
-
 			// Call the user callbacks on the event 'finished'.
 			function callFinishedListeners( action ) {
-				setTimeout( ()=> {
-					listeners.forEach( (listener)=> {
-						if ( listener.eventName == 'finished' ) {
-							listener.callback({
-								type:'finished',
-								action: action
-							});
-						};
-					}, action.tileDisplayDuration );
-				})
-				
+				listeners.forEach( (listener)=> {
+					if ( listener.eventName == 'finished' ) {
+						listener.callback({
+							type:'finished',
+							action: action
+						});
+					};
+				}, action.tileDisplayDuration );
 			};
+
 
 		};
 
@@ -170,7 +174,7 @@ function SpriteMixer() {
 	// pause and reset the action
 	function stop() {
 		this.actionSprite.currentDisplayTime = 0;
-		this.actionSprite.currentTile = 0;
+		this.actionSprite.currentTile = this.indexStart;
 		this.actionSprite.paused = true ;
 		if (this.hideWhenFinished == true) {
 			this.actionSprite.visible = false ;
