@@ -50,13 +50,9 @@ function SpriteMixer() {
 		
 		action.actionSprite.currentDisplayTime += milliSec;
 
-		// console.log( action.tileDisplayDuration )
-
 		while (action.actionSprite.currentDisplayTime > action.tileDisplayDuration) {
 			
-
 			console.log( action.actionSprite.currentTile );
-
 
 			action.actionSprite.currentDisplayTime -= action.tileDisplayDuration;
 			action.actionSprite.currentTile = (action.actionSprite.currentTile + 1) ;
@@ -85,8 +81,7 @@ function SpriteMixer() {
 			offsetTexture( action.actionSprite );
 			
 
-
-			/*
+			
 			if (action.actionSprite.currentTile == action.indexEnd &&
 				action.mustLoop == false &&
 			    action.clampWhenFinished == true) {
@@ -107,7 +102,7 @@ function SpriteMixer() {
 					};
 					callFinishedListeners( action );
 			};
-			*/
+			
 
 			// Call the user callbacks on the event 'finished'.
 			function callFinishedListeners( action ) {
@@ -135,6 +130,7 @@ function SpriteMixer() {
 		this.mustLoop = false ;
 		this.actionSprite.currentAction = this ;
 		this.actionSprite.currentTile = this.indexStart ;
+		offsetTexture( this.actionSprite );
 		this.actionSprite.paused = false ;
 		this.actionSprite.visible = true ;
 	};
@@ -156,6 +152,7 @@ function SpriteMixer() {
 		this.mustLoop = true ;
 		this.actionSprite.currentAction = this ;
 		this.actionSprite.currentTile = this.indexStart ;
+		offsetTexture( this.actionSprite );
 		this.actionSprite.paused = false ;
 		this.actionSprite.visible = true ;
 	};
