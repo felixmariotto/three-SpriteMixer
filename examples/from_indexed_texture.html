@@ -104,38 +104,40 @@
 
 
 
-
+		// These functions, called by the user interface, call the various
+		// methods available to control a sprite action.
 
 		function onPlayOnce() {
 			actions.runLeft.playOnce();
 		};
 
+
 		function onPlayLoop() {
 			actions.runLeft.playLoop();
 		};
+
 
 		function onPauseNextEnd() {
 			actions.runLeft.pauseNextEnd();
 		};
 
+
 		function onPause() {
 			actions.runLeft.pause();
 		};
 
+
 		function onStop() {
 			actions.runLeft.stop();
 		};
+
 
 		function onResume() {
 			actions.runLeft.resume();
 		};
 
 
-
-
-
 		function runRight() {
-
 			if ( running != 'right' ) {
 				actions.runRight.playLoop();
 				running = 'right' ;
@@ -144,13 +146,11 @@
 
 
 		function runLeft() {
-
 			if ( running != 'left' ) {
 				actions.runLeft.playLoop();
 				running = 'left' ;
 			};
 		};
-
 
 
 		function stopRunning() {
@@ -170,8 +170,13 @@
 
 
 
-		function init() {
 
+
+
+
+
+
+		function init() {
 
 			/////////////////////////
 			///  BASIC THREE CODE
@@ -194,19 +199,28 @@
 
 			var loader = new THREE.TextureLoader();
 
-
-
 			///////////////////////////////
 			///  SPRITEMIXER RELATED CODE
 			///////////////////////////////
 
 			spriteMixer = SpriteMixer();
 
+			// Make sure to use the texture once it's fully loaded, by
+			// passing a callback function to the loader.
 			loader.load("./textures/character.png", (texture)=> {
 
+				// An ActionSprite is instantiated with these arguments :
+				// - which THREE.Texture to use
+				// - the number of columns in your animation
+				// - the number of rows in your animation
 				actionSprite = spriteMixer.ActionSprite( texture, 10, 2 );
 				actionSprite.setFrame( 9 );
 
+				// Two actions are created with these arguments :
+				// - which actionSprite to use
+				// - index of the beginning of the action
+				// - index of the end of the action
+				// - duration of ONE FRAME in the animation, in milliseconds
 				actions.runRight = spriteMixer.Action(actionSprite, 0, 8, 40);
 				actions.runLeft = spriteMixer.Action(actionSprite, 10, 18, 40);
 
