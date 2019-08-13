@@ -213,7 +213,7 @@ function SpriteMixer() {
 
 
 	/*
-		spriteMixer.ActionSprite() returns an extended THREE.Sprite.
+		SpriteMixer.ActionSprite() returns an extended THREE.Sprite.
 		All the parameters necessary for the animation are stored inside,
 		but you can still use it as any THREE.Sprite, like scale it etc..
 
@@ -258,7 +258,7 @@ function SpriteMixer() {
 
 
 	/*
-		Action returns an object containing the informations related to a
+		SpriteMixer.Action returns an object containing the informations related to a
 		specific sequence in an actionSprite. For instance, if the actionSprite
 		contains 20 tiles, an Action could start at tile 5 and finish at tile 8.
 
