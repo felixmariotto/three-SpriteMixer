@@ -13,8 +13,6 @@ function SpriteMixer() {
 	var api = {
 		actionSprites: actionSprites,
 		update: update,
-		offsetTexture: offsetTexture,
-		updateSprite: updateSprite,
 		ActionSprite: ActionSprite,
 		Action: Action,
 		addEventListener: addEventListener
@@ -30,15 +28,14 @@ function SpriteMixer() {
 	};
 
 
-	function update(delta) { // Update every stored actionSprite if needed.
-		if (actionSprites.length > 0) {
-			let milliSec = delta * 1000 ; // THREE.Clock.getDelta() returns seconds.
-			for (let i=0 ; i < actionSprites.length ; i++) {
-				if ( actionSprites[i].paused == false ) {
-					updateSprite( actionSprites[i], milliSec );
-				};
+	function update( delta ) { // Update every stored actionSprite if needed.
+
+		actionSprites.forEach( (actionSprite)=> {
+			if ( actionSprite.paused == false ) {
+				updateAction( actionSprite.currentAction, delta * 1000 );
 			};
-		};
+		});
+
 	};
 
 
@@ -49,69 +46,84 @@ function SpriteMixer() {
 	};
 
 
-	function updateSprite( actionSprite, milliSec ) {
+	function updateAction( action, milliSec ) {
 		
-		actionSprite.currentDisplayTime += milliSec;
+		action.actionSprite.currentDisplayTime += milliSec;
 
-		while (actionSprite.currentDisplayTime > actionSprite.tileDisplayDuration) {
-			// This while loop will be called several times if the passed milliSec
-			// parameter is longer than a frame lasts. See bellow :
-			actionSprite.currentDisplayTime -= actionSprite.tileDisplayDuration;
-			actionSprite.currentTile ++;
+		// console.log( action.tileDisplayDuration )
+
+		while (action.actionSprite.currentDisplayTime > action.tileDisplayDuration) {
+			
+
+			console.log( action.actionSprite.currentTile );
+
+
+			action.actionSprite.currentDisplayTime -= action.tileDisplayDuration;
+			action.actionSprite.currentTile = (action.actionSprite.currentTile + 1) ;
 
 			// Restarts the animation if the last frame was reached at last call.
-			if (actionSprite.currentTile == actionSprite.numberOfTiles -1) {
-				actionSprite.currentTile = 0;
+			if (action.actionSprite.currentTile > action.indexEnd) {
+
+				console.log('loop')
+				
+				action.actionSprite.currentTile = action.indexStart ;
+
 				// Call the user callbacks on the event 'loop'
-				if ( actionSprite.mustLoop == true ) {
+				if ( action.mustLoop == true ) {
 					listeners.forEach( (listener)=> {
 						if ( listener.eventName == 'loop' ) {
 							listener.callback({
 								type:'loop',
-								action: actionSprite
+								action: action
 							});
 						};
 					});
 				};
 			};
 
-			offsetTexture(actionSprite);
 
-			if (actionSprite.currentTile == actionSprite.numberOfTiles - 1 &&
-				actionSprite.mustLoop == false &&
-			    actionSprite.clampWhenFinished == true) {
-				// Pause at last frame if .clampWhenFinished == true.
-					actionSprite.paused = true ;
-					if (actionSprite.hideWhenFinished == true) {
-						actionSprite.visible = false ;
+			offsetTexture( action.actionSprite );
+			
+
+
+			/*
+			if (action.actionSprite.currentTile == action.indexEnd &&
+				action.mustLoop == false &&
+			    action.clampWhenFinished == true) {
+				// Pause at last frame if action.clampWhenFinished == true.
+					action.actionSprite.paused = true ;
+					if (action.hideWhenFinished == true) {
+						action.actionSprite.visible = false ;
 					};
-					callFinishedListeners( actionSprite );
+					callFinishedListeners( action );
 				
-			} else if (actionSprite.currentTile == 0 &&
-				actionSprite.mustLoop == false &&
-			    actionSprite.clampWhenFinished == false) {
-				// Pause at first frame is .clampWhenFinished == false.
-					actionSprite.paused = true ;
-					if (actionSprite.hideWhenFinished == true) {
-						actionSprite.visible = false ;
+			} else if (action.actionSprite.currentTile == action.indexStart &&
+				action.mustLoop == false &&
+			    action.clampWhenFinished == false) {
+				// Pause at first frame if action.clampWhenFinished == false.
+					action.actionSprite.paused = true ;
+					if (action.hideWhenFinished == true) {
+						action.actionSprite.visible = false ;
 					};
-					callFinishedListeners( actionSprite );
+					callFinishedListeners( action );
 			};
+			*/
 
 			// Call the user callbacks on the event 'finished'.
-			function callFinishedListeners( actionSprite ) {
+			function callFinishedListeners( action ) {
 				setTimeout( ()=> {
 					listeners.forEach( (listener)=> {
 						if ( listener.eventName == 'finished' ) {
 							listener.callback({
 								type:'finished',
-								action: actionSprite
+								action: action
 							});
 						};
-					}, actionSprite.tileDisplayDuration );
+					}, action.tileDisplayDuration );
 				})
 				
 			};
+
 		};
 
 	};
@@ -120,29 +132,32 @@ function SpriteMixer() {
 
 	// reveal the sprite and play the action only once
 	function playOnce() {
-		this.currentTile = 0 ;
-		this.paused = false ;
-		this.visible = true ;
 		this.mustLoop = false ;
+		this.actionSprite.currentAction = this ;
+		this.actionSprite.currentTile = this.indexStart ;
+		this.actionSprite.paused = false ;
+		this.actionSprite.visible = true ;
 	};
 
 	// resume the action if it was paused
 	function resume() {
 		// this is in case setFrame was used to set a frame outside of the
 		// animation range, which would lead to bugs.
-		if ( this.currentTile > this.numberOfTiles -1 ) {
-			this.currentTile = 0;
+		if ( this.currentTile > this.indexStart &&
+			 this.currentTile < this.indexEnd ) {
+			this.currentTile = this.indexStart;
 		};
-		this.paused = false ;
-		this.visible = true ;
+		this.actionSprite.paused = false ;
+		this.actionSprite.visible = true ;
 	};
 
 	// reveal the sprite and play it in a loop
 	function playLoop() {
-		this.currentTile = 0;
-		this.paused = false ;
-		this.visible = true ;
 		this.mustLoop = true ;
+		this.actionSprite.currentAction = this ;
+		this.actionSprite.currentTile = this.indexStart ;
+		this.actionSprite.paused = false ;
+		this.actionSprite.visible = true ;
 	};
 
 	// pause the action when it reach the last frame
@@ -152,25 +167,25 @@ function SpriteMixer() {
 
 	// pause the action on the current frame
 	function pause() {
-		this.paused = true ;
+		this.actionSprite.paused = true ;
 	};
 
 	// pause and reset the action
 	function stop() {
-		this.currentDisplayTime = 0;
-		this.currentTile = 0;
-		this.paused = true ;
+		this.actionSprite.currentDisplayTime = 0;
+		this.actionSprite.currentTile = 0;
+		this.actionSprite.paused = true ;
 		if (this.hideWhenFinished == true) {
-			this.visible = false ;
+			this.actionSprite.visible = false ;
 		};
-		offsetTexture(this);
+		offsetTexture( this.actionSprite );
 	};
 
 	// Set manually a frame of the animation. Frame indexing starts at 0.
 	function setFrame( frameID ) {
-		this.pause();
+		this.paused = true ;
 		this.currentTile = frameID;
-		offsetTexture(this);
+		offsetTexture( this );
 	};
 
 	function getRow() {
@@ -201,20 +216,16 @@ function SpriteMixer() {
 		actionSprite.tiles = (tilesHoriz * tilesVert) ;
 		actionSprite.currentDisplayTime = 0 ;
 		actionSprite.currentTile = 0 ;
-		actionSprite.paused = false ;
+		actionSprite.paused = true ;
+		actionSprite.currentAction;
 
 		actionSprite.setFrame = setFrame ;
 		actionSprite.getRow = getRow;
 		actionSprite.getColumn = getColumn;
-
 		
 		offsetTexture( actionSprite ) ;
 
-		/*
-
 		actionSprites.push( actionSprite );
-
-		*/
 
 		return actionSprite ;
 		
@@ -239,12 +250,13 @@ function SpriteMixer() {
 		All the parameters necessary for the animation are stored inside,
 		but you can still use it as any THREE.Sprite, like scale it etc..
 	*/
-	function Action( actionSprite, numberOfTiles, tileDisplayDuration ) {
+	function Action( actionSprite, indexStart, indexEnd, tileDisplayDuration ) {
 
 		if ( !actionSprite.isIndexedSprite ) {
 			throw 'Error : "texture" argument must be an indexedTexture.' ;
 			return
 		};
+
 
 		return {
 			type: "spriteAction",
@@ -257,8 +269,9 @@ function SpriteMixer() {
 			clampWhenFinished: true,
 			hideWhenFinished: false,
 			mustLoop: true,
+			indexStart,
+			indexEnd,
 			tileDisplayDuration,
-			numberOfTiles,
 			actionSprite
 		};
 

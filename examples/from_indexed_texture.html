@@ -33,7 +33,8 @@
 	<script>
 		
 		var scene, camera, renderer, stats;
-		var clock, delta, spriteMixer ;
+		var clock, delta, spriteMixer, actionSprite;
+		var actions = {};
 
 		const WIDTH = window.innerWidth;
 		const HEIGHT = window.innerHeight;
@@ -81,13 +82,15 @@
 			loader.load("./textures/character.png", (texture)=> {
 
 				actionSprite = spriteMixer.ActionSprite( texture, 10, 2 );
-				action = spriteMixer.Action(actionSprite, 20, 45);
+				actions.runRight = spriteMixer.Action(actionSprite, 0, 8, 500);
+				actions.runLeft = spriteMixer.Action(actionSprite, 10, 18, 500);
+
+				actions.runLeft.playLoop();
+				// actionSprite.setFrame(9);
 
 				actionSprite.scale.set(1.7, 2, 1);
 				scene.add( actionSprite );
 			});
-
-
 
 
 		};
