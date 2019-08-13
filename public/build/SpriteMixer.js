@@ -1,14 +1,15 @@
 
-// Creator Felix Mariotto
+// Author: Felix Mariotto
 
 // Based on Lee Stemkoski's work who coded the core texture offsetting part :
 // http://stemkoski.github.io/Three.js/Texture-Animation.html
 
 function SpriteMixer() {
 
-
 	var actionSprites = []; // Will store every new actionSprite.
 	var listeners = []; // Will store the user callbacks to call upon loop, finished, etc..
+
+
 
 	var api = {
 		actionSprites: actionSprites,
@@ -19,6 +20,10 @@ function SpriteMixer() {
 	};
 
 
+
+	// It can be used to make SpriteMixer call a callback function
+	// when an action is finished or looping. eventName argument can
+	// be either "finished" or "loop".
 	function addEventListener( eventName, callback ) {
 		if ( eventName && callback ) {
 			listeners.push(  { eventName, callback }  );
@@ -28,15 +33,15 @@ function SpriteMixer() {
 	};
 
 
-	function update( delta ) { // Update every stored actionSprite if needed.
-
+	// Update every stored actionSprite if needed.
+	function update( delta ) { 
 		actionSprites.forEach( (actionSprite)=> {
 			if ( actionSprite.paused == false ) {
 				updateAction( actionSprite.currentAction, delta * 1000 );
 			};
 		});
-
 	};
+
 
 
 	// This offsets the texture to make the next frame of the animation appear.
@@ -46,13 +51,17 @@ function SpriteMixer() {
 	};
 
 
+
+	// This is called during the loop, it first check if the animation must
+	// be updated, then increment actionSprite.currentTile, then call offsetTexture().
+	// Various operations are made depending on clampWhenFinished and hideWhenFinished
+	// options.
 	function updateAction( action, milliSec ) {
 		
 		action.actionSprite.currentDisplayTime += milliSec;
 
 		while (action.actionSprite.currentDisplayTime > action.tileDisplayDuration) {
 		
-
 			action.actionSprite.currentDisplayTime -= action.tileDisplayDuration;
 			action.actionSprite.currentTile = (action.actionSprite.currentTile + 1) ;
 
@@ -188,10 +197,12 @@ function SpriteMixer() {
 		offsetTexture( this );
 	};
 
+	// returns the row of the current tile.
 	function getRow() {
 		return Math.floor(this.currentTile / this.tilesHoriz);
 	};
 
+	// returns the column of the current tile.
 	function getColumn() {
 		return this.currentTile % this.tilesHoriz;
 	};
