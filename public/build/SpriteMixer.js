@@ -44,10 +44,8 @@ function SpriteMixer() {
 
 	// This offsets the texture to make the next frame of the animation appear.
 	function offsetTexture( actionSprite ) {
-		let currentColumn = actionSprite.currentTile % actionSprite.tilesHoriz;
-		actionSprite.material.map.offset.x = currentColumn / actionSprite.tilesHoriz;
-		let currentRow = Math.floor(actionSprite.currentTile / actionSprite.tilesHoriz);
-		actionSprite.material.map.offset.y = (actionSprite.tilesVert - currentRow -1 ) / actionSprite.tilesVert;
+		actionSprite.material.map.offset.x = actionSprite.getColumn() / actionSprite.tilesHoriz;
+		actionSprite.material.map.offset.y = (actionSprite.tilesVert - actionSprite.getRow() -1 ) / actionSprite.tilesVert;
 	};
 
 
@@ -175,6 +173,14 @@ function SpriteMixer() {
 		offsetTexture(this);
 	};
 
+	function getRow() {
+		return Math.floor(this.currentTile / this.tilesHoriz);
+	};
+
+	function getColumn() {
+		return this.currentTile % this.tilesHoriz;
+	};
+
 
 
 
@@ -193,11 +199,15 @@ function SpriteMixer() {
 		actionSprite.tilesHoriz = tilesHoriz ;
 		actionSprite.tilesVert = tilesVert ;
 		actionSprite.tiles = (tilesHoriz * tilesVert) ;
-		actionSprite.setFrame = setFrame ;
 		actionSprite.currentDisplayTime = 0 ;
 		actionSprite.currentTile = 0 ;
 		actionSprite.paused = false ;
 
+		actionSprite.setFrame = setFrame ;
+		actionSprite.getRow = getRow;
+		actionSprite.getColumn = getColumn;
+
+		
 		offsetTexture( actionSprite ) ;
 
 		/*
