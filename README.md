@@ -108,7 +108,7 @@ actionSprite.setFrame( index );
 Set manually a frame of the animation. Frame indexing starts at 0.
 
 ### The texture including tiles must be in this format :
-- Frames go from top to left and top to bottom
+- Frames go from left ro right and top to bottom
 - One texture can contain tiles for several actions
 - Some tiles can be empty
 - Each side of the texture must be power of 2, or browsers will resize it
