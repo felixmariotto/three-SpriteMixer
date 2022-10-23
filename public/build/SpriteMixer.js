@@ -1,5 +1,6 @@
 
 // Author: Felix Mariotto
+// Edit by: Loryhoof
 
 // Based on Lee Stemkoski's work who coded the core texture offsetting part :
 // http://stemkoski.github.io/Three.js/Texture-Animation.html
@@ -46,7 +47,7 @@ function SpriteMixer() {
 
 	// This offsets the texture to make the next frame of the animation appear.
 	function offsetTexture( actionSprite ) {
-		actionSprite.material.map.offset.x = actionSprite.getColumn() / actionSprite.tilesHoriz;
+		actionSprite.material.map.offset.x = actionSprite.mirrored ? - ( actionSprite.getColumn() + 1 ) / actionSprite.tilesHoriz : ( actionSprite.getColumn() / actionSprite.tilesHoriz );
 		actionSprite.material.map.offset.y = (actionSprite.tilesVert - actionSprite.getRow() -1 ) / actionSprite.tilesVert;
 	};
 
@@ -224,7 +225,8 @@ function SpriteMixer() {
 	*/
 	function ActionSprite( texture, tilesHoriz, tilesVert ) {
 
-		texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+		texture.wrapT = THREE.RepeatWrapping;
+		texture.wrapS = THREE.MirroredRepeatWrapping;
 		texture.repeat.set( 1/tilesHoriz, 1/tilesVert );
 
 		let spriteMaterial = new THREE.SpriteMaterial({
@@ -242,6 +244,7 @@ function SpriteMixer() {
 		actionSprite.currentAction;
 
 		actionSprite.setFrame = setFrame ;
+		actionSprite.mirrored = false ;
 		actionSprite.getRow = getRow;
 		actionSprite.getColumn = getColumn;
 		
